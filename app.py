@@ -11,7 +11,7 @@ st.set_page_config(page_title="Hệ thống Đánh giá Năng lực số 6 Miề
 # Gọi khóa bảo mật từ hệ thống Streamlit
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
-    genai.configure(api_key=API_KEY)
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 except:
     st.error("Chưa cấu hình API Key trong mục Secrets!")
 
