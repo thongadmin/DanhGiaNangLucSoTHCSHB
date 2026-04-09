@@ -12,7 +12,7 @@ st.set_page_config(page_title="Hệ thống Đánh giá Năng lực số 6 Miề
 # API KEY (Thay bằng key của bạn)
 API_KEY = "AIzaSyC3urNggutM1mkHKFIum4uia8B9Ouapk4U"
 genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-pro')
 
 # Đường dẫn App Script (Tôi sẽ hướng dẫn bạn lấy ở bước dưới)
 SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzVcReTeE26LxclsFo42HOT_j4Ps58NVHfibGOZXkknMn5EBVpU9oOZZZTINXHs-IqJnw/exec"
