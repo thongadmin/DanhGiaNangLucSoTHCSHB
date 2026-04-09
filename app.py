@@ -8,10 +8,14 @@ import requests # Để gửi dữ liệu lên Google Sheets
 
 # --- CẤU HÌNH ---
 st.set_page_config(page_title="Hệ thống Đánh giá Năng lực số 6 Miền", layout="wide")
+# Gọi khóa bảo mật từ hệ thống Streamlit
+try:
+    API_KEY = st.secrets["GEMINI_API_KEY"]
+    genai.configure(api_key=API_KEY)
+except:
+    st.error("Chưa cấu hình API Key trong mục Secrets!")
 
-# API KEY (Thay bằng key của bạn)
-API_KEY = "AIzaSyC3urNggutM1mkHKFIum4uia8B9Ouapk4U"
-genai.configure(api_key=API_KEY)
+# Sử dụng model ổn định nhất
 model = genai.GenerativeModel('gemini-pro')
 
 # Đường dẫn App Script (Tôi sẽ hướng dẫn bạn lấy ở bước dưới)
