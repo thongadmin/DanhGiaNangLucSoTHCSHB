@@ -15,8 +15,7 @@ try:
 except:
     st.error("Chưa cấu hình API Key trong mục Secrets!")
 
-# Sử dụng model ổn định nhất
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Đường dẫn App Script (Tôi sẽ hướng dẫn bạn lấy ở bước dưới)
 SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzVcReTeE26LxclsFo42HOT_j4Ps58NVHfibGOZXkknMn5EBVpU9oOZZZTINXHs-IqJnw/exec"
