@@ -10,17 +10,19 @@ import requests
 st.set_page_config(page_title="Hệ thống Đánh giá Năng lực số 6 Miền", layout="wide", page_icon="🌐")
 
 # --- KẾT NỐI API TỪ SECRETS ---
-# Sửa lại đoạn khởi tạo model
+# Thay thế đoạn khởi tạo model cũ bằng đoạn này:
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     
-    # SỬA TÊN MODEL THÀNH THẾ NÀY:
-    # Sử dụng 'gemini-1.5-flash-latest' để ép hệ thống dùng bản mới nhất, ổn định nhất
-    model = genai.GenerativeModel('gemini-1.5-flash-latest') 
-    
+    # Chiến thuật: Thử Flash trước, nếu lỗi thì thử Pro
+    try:
+        model = genai.GenerativeModel('gemini-1.5-flash')
+    except:
+        model = genai.GenerativeModel('gemini-1.0-pro')
+        
 except Exception as e:
-    st.error(f"Lỗi cấu hình: {e}")
+    st.error(f"Lỗi kết nối API: {e}")
 
 # URL Google App Script để lưu dữ liệu vào Sheets
 SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzVcReTeE26LxclsFo42HOT_j4Ps58NVHfibGOZXkknMn5EBVpU9oOZZZTINXHs-IqJnw/exec"
