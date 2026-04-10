@@ -6,17 +6,23 @@ import json
 from datetime import datetime
 import requests
 import google.generativeai as genai
+import os
+
 # --- CẤU HÌNH HỆ THỐNG ---
 st.set_page_config(page_title="AI Digital Competence Assessment", layout="wide")
 
 
 
+API_KEY = os.getenv("GOOGLE_API_KEY")
+
+if not API_KEY:
+    import streamlit as st
+    st.error("❌ Thiếu API KEY")
+    st.stop()
+
 genai.configure(api_key=API_KEY)
 
 model = genai.GenerativeModel("gemini-1.5-flash")
-
-response = model.generate_content("Đánh giá giáo viên này...")
-print(response.text)
 
 # URL Google App Script để lưu dữ liệu (Tùy chọn)
 SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzVcReTeE26LxclsFo42HOT_j4Ps58NVHfibGOZXkknMn5EBVpU9oOZZZTINXHs-IqJnw/exec"
