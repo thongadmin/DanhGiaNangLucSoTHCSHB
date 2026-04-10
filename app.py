@@ -9,9 +9,12 @@ import requests
 # --- CẤU HÌNH HỆ THỐNG ---
 st.set_page_config(page_title="AI Digital Competence Assessment", layout="wide")
 
-# Thiết lập API Key Gemini (Thay thế bằng key của bạn)
-genai.configure(api_key="YOUR_GEMINI_API_KEY")
-model = genai.GenerativeModel('gemini-1.5-flash')
+genai.configure(api_key=API_KEY)
+
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+response = model.generate_content("Đánh giá giáo viên này...")
+print(response.text)
 
 # URL Google App Script để lưu dữ liệu (Tùy chọn)
 SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzVcReTeE26LxclsFo42HOT_j4Ps58NVHfibGOZXkknMn5EBVpU9oOZZZTINXHs-IqJnw/exec"
