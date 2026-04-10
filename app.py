@@ -5,9 +5,11 @@ import pandas as pd
 import json
 from datetime import datetime
 import requests
-
+import google.generativeai as genai
 # --- CẤU HÌNH HỆ THỐNG ---
 st.set_page_config(page_title="AI Digital Competence Assessment", layout="wide")
+
+
 
 genai.configure(api_key=API_KEY)
 
