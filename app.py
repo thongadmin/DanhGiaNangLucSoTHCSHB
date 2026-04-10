@@ -16,14 +16,7 @@ genai.configure(api_key=API_KEY)
 
 model = genai.GenerativeModel("models/gemini-1.5-flash")
 
-response = model.generate_content(
-    "Hello",
-    generation_config={
-        "response_mime_type": "text/plain"
-    }
-)
 
-print(response.text)
 
 # URL Google App Script để lưu dữ liệu (Tùy chọn)
 SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzVcReTeE26LxclsFo42HOT_j4Ps58NVHfibGOZXkknMn5EBVpU9oOZZZTINXHs-IqJnw/exec"
