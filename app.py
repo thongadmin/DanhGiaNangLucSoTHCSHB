@@ -4,7 +4,6 @@ import plotly.express as px
 
 # --- CẤU HÌNH TRANG ---
 st.set_page_config(page_title="Hệ thống Đánh giá Năng lực số", layout="wide")
-
 # --- CUSTOM CSS ĐỂ SAO CHÉP GIAO DIỆN HTML ---
 st.markdown("""
 <style>
