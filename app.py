@@ -1,145 +1,102 @@
 import streamlit as st
-import os
-import json
 import pandas as pd
 import plotly.express as px
-from datetime import datetime
-from google import genai
 
-# ================= CONFIG =================
-st.set_page_config(page_title="AI Digital Competence", layout="wide")
+# --- CẤU HÌNH TRANG ---
+st.set_page_config(page_title="Hệ thống Đánh giá Năng lực số", layout="wide")
 
-API_KEY = os.getenv("GOOGLE_API_KEY")
+# --- CUSTOM CSS ĐỂ SAO CHÉP GIAO DIỆN HTML ---
+st.markdown("""
+<style>
+    /* Nền tảng và Sidebar */
+    .stApp { background-color: #f8f9fa; }
+    [data-testid="stSidebar"] { background-color: #1a1e36 !important; color: white; }
+    
+    /* Tùy chỉnh các thẻ Card */
+    .custom-card {
+        background-color: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        border: 1px solid #edf2f7;
+    }
+    .card-label { color: #64748b; font-size: 14px; font-weight: 500; margin-bottom: 10px; }
+    .card-value { color: #1e293b; font-size: 32px; font-weight: 700; margin: 0; }
+    .card-sub { color: #10b981; font-size: 13px; margin-top: 5px; }
+    .level-tag { color: #6366f1; font-style: italic; font-weight: bold; font-size: 24px; text-transform: uppercase; }
+    
+    /* Hộp phân tích AI */
+    .ai-box {
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+    }
+    
+    /* Sidebar Navigation */
+    .stRadio [role="radiogroup"] { color: white; }
+    div[data-testid="stSidebarNav"] { padding-top: 2rem; }
+</style>
+""", unsafe_allow_html=True)
 
-if not API_KEY:
-    st.error("❌ Thiếu GOOGLE_API_KEY (vào Settings → Secrets)")
-    st.stop()
+# --- SIDEBAR ---
+with st.sidebar:
+    st.markdown("<h2 style='text-align:center; color:white;'>DIGITAL SKILLS</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; color:#94a3b8;'>ASSESSMENT</p>", unsafe_allow_html=True)
+    st.write("---")
+    menu = st.radio("ĐIỀU HƯỚNG", ["Kết quả tổng quan", "Thực hiện đánh giá", "Quản trị dữ liệu"])
+    st.markdown("<br><br><br><br><br><div style='font-size:12px; color:#94a3b8;'>PHIÊN BẢN 1.5<br>Khung năng lực UNESCO</div>", unsafe_allow_html=True)
 
-# Gemini client (SDK mới)
-client = genai.Client(api_key=API_KEY)
+# --- DỮ LIỆU ---
+labels = ['Dạy học số', 'Kiểm tra', 'Giao tiếp', 'Sáng tạo', 'An toàn', 'Giải quyết vấn đề']
+scores = [3.5, 3.2, 3.0, 3.8, 2.8, 2.5]
 
-# ================= CONSTANTS =================
-MIEN_LABELS = [
-    "Miền 1: Dạy học số", 
-    "Miền 2: Kiểm tra đánh giá", 
-    "Miền 3: Trao quyền người học", 
-    "Miền 4: Kỹ năng công nghệ", 
-    "Miền 5: Phát triển chuyên môn", 
-    "Miền 6: Trí tuệ nhân tạo (AI)"
-]
+# --- HIỂN THỊ ---
+if menu == "Kết quả tổng quan":
+    # Header
+    c_header1, c_header2 = st.columns([3, 1])
+    with c_header1:
+        st.title("BÁO CÁO NĂNG LỰC CÁ NHÂN")
+    with c_header2:
+        st.markdown("""<div style='text-align:right; margin-top:20px;'>
+            <b>GV. Nguyễn Văn A</b><br><small style='color:gray;'>TRƯỜNG THPT CHUYÊN</small>
+        </div>""", unsafe_allow_html=True)
 
-# ================= FUNCTIONS =================
-def analyze_with_ai(name, files):
-    file_names = ", ".join([f.name for f in files])
+    # Row 1: Cards
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown(f'<div class="custom-card"><p class="card-label">Điểm trung bình</p><p class="card-value">3.2 / 4.0</p><p class="card-sub">▲ Tăng 12% so với kỳ trước</p></div>', unsafe_allow_html=True)
+    with col2:
+        st.markdown(f'<div class="custom-card"><p class="card-label">Xếp loại năng lực</p><p class="level-tag">THÀNH THẠO</p><p style="color:gray; font-size:12px;">Mức 3: Advanced User</p></div>', unsafe_allow_html=True)
+    with col3:
+        st.markdown(f'<div class="custom-card"><p class="card-label">Minh chứng đã nộp</p><p class="card-value">12 <span style="font-size:16px; font-weight:normal;">File</span></p><p style="font-size:13px;"><a href="#">Xem chi tiết hồ sơ</a></p></div>', unsafe_allow_html=True)
 
-    prompt = f"""
-    Bạn là chuyên gia đánh giá năng lực số giáo viên theo khung 6 miền.
+    # Row 2: Biểu đồ & AI
+    c1, c2 = st.columns([1.8, 1.2])
+    with c1:
+        st.markdown('<div class="custom-card"><h5>Mô hình 6 Miền Năng lực</h5>', unsafe_allow_html=True)
+        df = pd.DataFrame(dict(r=scores, theta=labels))
+        fig = px.line_polar(df, r='r', theta='theta', line_close=True, range_r=[0,4])
+        fig.update_traces(fill='toself', line_color='#6366f1', fillcolor='rgba(99, 102, 241, 0.3)')
+        fig.update_layout(margin=dict(l=20, r=20, t=20, b=20), height=400)
+        st.plotly_chart(fig, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    Minh chứng gồm: {file_names}
-
-    Hãy:
-    - Chấm điểm từng miền (0 → 4)
-    - Nhận xét chi tiết
-    - Đưa ra khuyến nghị cải thiện
-
-    TRẢ VỀ JSON DUY NHẤT:
-    {{
-        "scores": [x1,x2,x3,x4,x5,x6],
-        "summary": "Nhận xét chi tiết",
-        "recommendations": "Đề xuất cải thiện"
-    }}
-    """
-
-    try:
-        response = client.models.generate_content(
-            model="gemini-1.5-flash",
-            contents=prompt
-        )
-
-        text = response.text.strip()
-
-        # Làm sạch JSON
-        text = text.replace("```json", "").replace("```", "").strip()
-
-        return json.loads(text)
-
-    except Exception as e:
-        return {"error": str(e)}
-
-
-def draw_chart(scores):
-    df = pd.DataFrame(dict(r=scores, theta=MIEN_LABELS))
-    fig = px.line_polar(df, r='r', theta='theta', line_close=True, range_r=[0,4])
-    fig.update_traces(fill='toself')
-    return fig
-
-# ================= UI =================
-st.title("🧠 AI ĐÁNH GIÁ NĂNG LỰC SỐ GIÁO VIÊN (GENAI SDK)")
-
-menu = st.sidebar.radio("Chọn chức năng", ["Đánh giá", "Báo cáo", "Dashboard"])
-
-# ================= TAB 1 =================
-if menu == "Đánh giá":
-    st.header("Nhập thông tin")
-
-    name = st.text_input("Họ tên")
-    unit = st.text_input("Đơn vị")
-    role = st.selectbox("Vai trò", ["Giáo viên","Nhân viên","Quản lý"])
-
-    files = st.file_uploader("Upload minh chứng", accept_multiple_files=True)
-
-    if st.button("🚀 Phân tích bằng AI"):
-        if not name or not files:
-            st.warning("Thiếu dữ liệu")
-        else:
-            with st.spinner("AI đang phân tích..."):
-                result = analyze_with_ai(name, files)
-
-                if "error" in result:
-                    st.error(result["error"])
-                else:
-                    st.session_state["result"] = {
-                        "info": {"name": name, "unit": unit, "role": role},
-                        "scores": result["scores"],
-                        "summary": result["summary"],
-                        "recommendations": result.get("recommendations", ""),
-                        "time": str(datetime.now())
-                    }
-                    st.success("✅ Đánh giá hoàn tất!")
-
-# ================= TAB 2 =================
-elif menu == "Báo cáo":
-    if "result" not in st.session_state:
-        st.info("Chưa có dữ liệu")
-    else:
-        res = st.session_state["result"]
-
-        st.subheader(f"Báo cáo: {res['info']['name']}")
-
-        col1, col2 = st.columns([2,1])
-
-        with col1:
-            st.plotly_chart(draw_chart(res['scores']), use_container_width=True)
-
-        with col2:
-            avg = round(sum(res['scores'])/6,2)
-            st.metric("Điểm trung bình", avg)
-            st.info(res['summary'])
-            st.warning(res['recommendations'])
-
-            st.download_button(
-                "📄 Xuất báo cáo JSON",
-                data=json.dumps(res, ensure_ascii=False, indent=2),
-                file_name="report.json"
-            )
-
-# ================= TAB 3 =================
-elif menu == "Dashboard":
-    st.header("Dashboard tổng hợp")
-
-    data = pd.DataFrame([
-        {"Tên":"Nguyễn A","Điểm":3.2},
-        {"Tên":"Trần B","Điểm":2.5}
-    ])
-
-    st.bar_chart(data.set_index("Tên"))
+    with c2:
+        st.markdown("""<div class="ai-box">
+            <h5 style='display:flex; align-items:center;'>🤖 Phân tích từ AI</h5>
+            <p style='font-style:italic; font-size:14px; line-height:1.6; opacity:0.9;'>
+            "Bạn thể hiện thế mạnh vượt trội trong việc <b>Dạy học số</b> và <b>Kiểm tra đánh giá</b>. 
+            Tuy nhiên, khả năng <b>Giải quyết vấn đề công nghệ</b> cần được cải thiện bằng cách tham gia 
+            thêm các khóa đào tạo về quản trị hệ thống."
+            </p>
+        </div>""", unsafe_allow_html=True)
+        
+        st.write("")
+        st.markdown('<div class="custom-card"><h6>Chi tiết điểm từng miền</h6>', unsafe_allow_html=True)
+        for l, s in zip(labels, scores):
+            st.caption(f"{l}: {s}/4.0")
+            st.progress(s/4.0)
+        st.markdown('</div>', unsafe_allow_html=True)
